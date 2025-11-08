@@ -13,3 +13,52 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Arena {
+  id         Int      @id @default(autoincrement())
+  arenaName  String   @unique
+  matches    Match[]  // 1:n -> One Arena has many Matches
+}
+
+model Match {
+  id          Int         @id @default(autoincrement())
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  matchNumber String      @unique
+
+  arenaId     Int
+  arena       Arena       @relation(fields: [arenaId], references: [id])
+
+  teamMatches TeamMatch[] // 1:n -> One matches can have many teams breaks table into ===> // 1:n -> One Match has many TeamMatches 
+}
+
+model Team {
+  id          Int         @id @default(autoincrement())
+  teamName    String      @unique
+  teamMatches TeamMatch[] // 1:n -> One matches can have many teams breaks table into ===> // 1:n -> One Team has many TeamMatches
+}
+
+model TeamMatch {
+  id       Int   @id @default(autoincrement()) // ✅ must mark as @id
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  matchId  Int
+  teamId   Int
+  score    Int
+
+  match    Match @relation(fields: [matchId], references: [id])
+  team     Team  @relation(fields: [teamId], references: [id])
+
+  @@unique([matchId, teamId]) // prevent duplicate team-match pairings
+
+
+  statusId Int
+  status Status @relation(fields: [statusId], references: [id]) //One match can have only one status 1:1
+}
+
+model Status {
+  id Int  @id @default(autoincrement())
+  statusName String  @unique
+
+  teamMatches TeamMatch[] // One status can have many matches 1:n
+}
