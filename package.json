@@ -6,7 +6,8 @@
   "scripts": {
     "start": "tsc && node dist/app.js",
     "lint": "eslint . --ext .ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prisma:seed": "npx ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +22,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.18.0",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0"
   }
 }
